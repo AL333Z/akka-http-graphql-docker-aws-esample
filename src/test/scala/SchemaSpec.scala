@@ -83,7 +83,7 @@ class SchemaSpec extends WordSpec with Matchers {
   def executeQuery(query: Document, vars: Json = Json.obj()) = {
     val futureResult = Executor.execute(StarWarsSchema, query,
       variables = vars,
-      userContext = new CharacterRepo(???),
+      userContext = new CharacterRepo(),
       deferredResolver = DeferredResolver.fetchers(SchemaDefinition.characters))
 
     Await.result(futureResult, 10.seconds)
