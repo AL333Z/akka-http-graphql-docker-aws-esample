@@ -26,6 +26,19 @@ lazy val `sangria-akka-http-example` =
     )
 
 // *****************************************************************************
+// Push to ECR
+// *****************************************************************************
+import com.amazonaws.regions.{Region, Regions}
+
+enablePlugins(EcrPlugin)
+
+region in Ecr := Region.getRegion(Regions.EU_WEST_1)
+repositoryName in Ecr := (packageName in Docker).value
+localDockerImage in Ecr := (packageName in Docker).value + ":" + (version in Docker).value
+
+push in Ecr := ((push in Ecr) dependsOn (publishLocal in Docker, login in Ecr)).value
+
+// *****************************************************************************
 // Settings
 // *****************************************************************************
 
@@ -63,10 +76,7 @@ lazy val gitSettings =
 
 lazy val dockerSettings =
   Seq(
-    daemonUser.in(Docker) := "root",
-    maintainer.in(Docker) := "Alessandro Zoffoli",
     version.in(Docker) := "latest",
     dockerBaseImage := "openjdk:8u151-slim",
     dockerExposedPorts := Vector(9000),
-    dockerRepository := Some("al333z")
   )
